@@ -1,0 +1,702 @@
+from __future__ import annotations
+
+from pydantic import BaseModel, Field
+
+
+class LoginRequest(BaseModel):
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)
+
+
+class LoginResponse(BaseModel):
+    token: str | None = None
+    expires_at: str | None = None
+
+
+class ApiErrorResponse(BaseModel):
+    code: str
+    message: str
+    details: dict[str, object] | None = None
+
+
+class SessionResponse(BaseModel):
+    authenticated: bool
+
+
+class WeaponOverrunSuitEntryResponse(BaseModel):
+    Name: str
+    SkillDescription: list[str] = Field(default_factory=list)
+    WaferBagPath: str
+
+
+class NameplateEntryResponse(BaseModel):
+    Id: int
+    NameplateQuality: int
+    Name: str
+    Title: str
+    Description: str
+    IconType: int
+    Icon: str | None = None
+    BackBoard: str | None = None
+    OutLineColor: str | None = None
+
+
+class MedalEntryResponse(BaseModel):
+    Name: str
+    Desc: str
+    MedalImg: str | None = None
+
+
+class ChatBoardEntryResponse(BaseModel):
+    Name: str
+    WorldDesc: str
+    Icon: str | None = None
+
+
+class ChatEmojiEntryResponse(BaseModel):
+    Name: str
+    BigIcon: str | None = None
+    WorldDesc: str
+
+
+class UnlockChatEmojisRequest(BaseModel):
+    emoji_ids: list[int] = Field(default_factory=list)
+
+
+class UnlockChatEmojisResponse(BaseModel):
+    unlocked_ids: list[int] = Field(default_factory=list)
+
+
+class ScoreTitleEntryResponse(BaseModel):
+    Name: str
+    MaxQuality: int
+    WorldDesc: str
+    MedalImg: str | None = None
+
+
+class UnlockScoreTitlesRequest(BaseModel):
+    title_ids: list[int] = Field(default_factory=list)
+
+
+class UnlockScoreTitlesResponse(BaseModel):
+    unlocked_ids: list[int] = Field(default_factory=list)
+
+
+class AppInfoResponse(BaseModel):
+    name: str
+    mongo_db: str
+    mongo_configured: bool
+    server_management_enabled: bool
+    server_controls_visible: bool
+    player_level_max: int
+    player_level_max_exp_map: dict[int, int]
+    player_honor_level_max: int
+    player_honor_level_max_exp_map: dict[int, int]
+    player_portrait_url_map: dict[int, str]
+    player_portrait_frame_url_map: dict[int, str]
+    player_portrait_name_map: dict[int, str]
+    player_portrait_frame_name_map: dict[int, str]
+    player_background_url_map: dict[int, str]
+    player_background_name_map: dict[int, str]
+    item_name_map: dict[int, str]
+    equip_name_map: dict[int, str]
+    weapon_type_name_map: dict[int, str]
+    equip_star_map: dict[int, int]
+    equip_site_map: dict[int, str]
+    equippable_memory_nums: int
+    equip_icon_url_map: dict[int, str]
+    character_log_name_map: dict[int, str]
+    character_head_icon_url_map: dict[int, str]
+    weapon_skill_entries_map: dict[int, dict[str, str]] = Field(default_factory=dict)
+    weapon_overrun_suit_entries_map: dict[int, WeaponOverrunSuitEntryResponse] = Field(default_factory=dict)
+    weapon_overrun_suit_memory_ids_map: dict[int, dict[int, int]] = Field(default_factory=dict)
+    weapon_skill_pool_entries_map: dict[int, dict[int, list[int]]] = Field(default_factory=dict)
+    attrib_pool_entries_map: dict[int, list[dict[str, object]]] = Field(default_factory=dict)
+    character_skill_pool_entries_map: dict[int, dict[int, list[dict[str, object]]]] = Field(default_factory=dict)
+    equip_resonance_map: dict[int, list[list[int]]] = Field(default_factory=dict)
+    character_grade_name_map: dict[int, list[str]] = Field(default_factory=dict)
+    character_trust_exp_map: dict[int, dict[int, int]] = Field(default_factory=dict)
+    stage_entries_map: dict[int, dict[str, str]] = Field(default_factory=dict)
+    nameplate_entires_map: dict[int, NameplateEntryResponse] = Field(default_factory=dict)
+    medal_entires_map: dict[int, MedalEntryResponse] = Field(default_factory=dict)
+    chat_board_entires_map: dict[int, ChatBoardEntryResponse] = Field(default_factory=dict)
+
+
+class CharacterManagementItemResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    Sequence: int
+    Level: int | None = None
+    Quality: int | None = None
+    Star: int | None = None
+    Grade: int | None = None
+    GradeName: str | None = None
+    AwakenLevel: int = 0
+
+
+class CharacterManagementListResponse(BaseModel):
+    items: list[CharacterManagementItemResponse] = Field(default_factory=list)
+    page: int = 1
+    page_size: int = 10
+    total: int = 0
+    total_pages: int = 0
+
+
+class CharacterAvailableListResponse(BaseModel):
+    character_ids: list[int] = Field(default_factory=list)
+
+
+class AddCharacterRequest(BaseModel):
+    CharacterId: int
+
+
+class AddCharacterResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    added: bool = True
+
+
+class SetCharacterSupportResponse(BaseModel):
+    record_id: int
+    updated: bool = True
+
+
+class UpdateCharacterEvolutionRequest(BaseModel):
+    Quality: int
+    Star: int
+
+
+class BulkUpdateCharacterEvolutionRequest(BaseModel):
+    Quality: int
+    Star: int = 0
+
+
+class UpdateCharacterEvolutionResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    Quality: int | None = None
+    Star: int | None = None
+
+
+class BulkUpdateCharacterEvolutionResponse(BaseModel):
+    updated_count: int = 0
+    skipped_character_ids: list[int] = Field(default_factory=list)
+
+
+class UpdateCharacterLevelupRequest(BaseModel):
+    Level: int
+    Exp: int
+
+
+class UpdateCharacterLevelupResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    Level: int | None = None
+    Exp: int | None = None
+
+
+class UpdateCharacterTrustRequest(BaseModel):
+    TrustLv: int
+    TrustExp: int
+
+
+class UpdateCharacterTrustResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    TrustLv: int | None = None
+    TrustExp: int | None = None
+
+
+class UpdateCharacterGradeRequest(BaseModel):
+    Grade: int
+
+
+class UpdateCharacterGradeResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    Grade: int | None = None
+
+
+class UpdateCharacterAwakenRequest(BaseModel):
+    AwakenLevel: int
+
+
+class UpdateCharacterAwakenResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    AwakenLevel: int = 1
+    LiberateLv: int = 1
+
+
+class UpdateCharacterFashionRequest(BaseModel):
+    FashionId: int
+
+
+class UpdateCharacterWeaponFashionRequest(BaseModel):
+    FashionId: int | None = None
+
+
+class UpdateCharacterFashionResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    CurrentFahionId: int
+
+
+class UpdateCharacterHeadFashionResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    HeadFashionId: int
+    HeadFashionType: int
+
+
+class UpdateCharacterWeaponFashionResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    CurrentWeaponFashionId: int | None = None
+
+
+class UpdateCharacterSkillRequest(BaseModel):
+    SkillId: int
+    Level: int
+
+
+class UpdateCharacterSkillResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    SkillId: int
+    Level: int = 0
+    MaxLevel: int = 0
+
+
+class MaxCharacterResponse(BaseModel):
+    record_id: int
+    CharacterId: int
+    updated: bool = True
+
+
+class MaxAllCharactersResponse(BaseModel):
+    updated: bool = True
+    character_count: int = 0
+    equip_count: int = 0
+    gather_reward_count: int = 0
+
+
+class CharacterFashionResponse(BaseModel):
+    Id: int
+    Quality: int
+    IsLock: bool = True
+    BigIcon: str
+    BigHeadIcon: str
+    BigHeadIconFashion: str
+    BigHeadIconLiberation: str
+    Name: str
+    Description: str
+
+
+class CharacterEquipResponse(BaseModel):
+    record_id: int
+    TemplateId: int
+    Breakthrough: int | None = None
+    Level: int | None = None
+
+
+class CharacterEquipResonanceResponse(BaseModel):
+    slot: int
+    type: int | None = None
+    template_id: int | None = None
+    character_id: int | None = None
+
+
+class CharacterWeaponOverrunResponse(BaseModel):
+    level: int | None = None
+    max_level: int | None = None
+    chose_suit: int | None = None
+
+
+class CharacterDetailWeaponResponse(CharacterEquipResponse):
+    Description: str | None = None
+    resonance_info: list[CharacterEquipResonanceResponse] | None = None
+    weapon_overrun_data: CharacterWeaponOverrunResponse | None = None
+
+
+class CharacterDetailMemoryResponse(CharacterEquipResponse):
+    Description: str | None = None
+    resonance_info: list[CharacterEquipResonanceResponse] | None = None
+
+
+class CharacterSkillInfoResponse(BaseModel):
+    SkillId: int
+    Name: str = ""
+    Level: int = 0
+    MaxLevel: int = 0
+
+
+class WeaponFashionResponse(BaseModel):
+    Id: int
+    Quality: int
+    IsLock: bool = True
+    BigIcon: str
+    Name: str
+    Description: str
+
+
+class CharacterExtraInfoResponse(BaseModel):
+    TrustLv: int | None = None
+    TrustExp: int | None = None
+    Exp: int | None = None
+    MaxLiberateLevel: int | None = None
+    LevelExpMap: dict[int, int] = Field(default_factory=dict)
+    QualityBound: list[int] = Field(default_factory=list)
+    Intro: str | None = None
+    CurrentFahionId: int | None = None
+    DefaultFashionId: int | None = None
+    HeadFashionId: int | None = None
+    HeadFashionType: int | None = None
+    Fashions: list[CharacterFashionResponse] = Field(default_factory=list)
+    EquipType: int | None = None
+    CurrentWeaponFashionId: int | None = None
+    WeaponFashions: list[WeaponFashionResponse] = Field(default_factory=list)
+    Weapon: CharacterDetailWeaponResponse | None = None
+    Memories: list[CharacterDetailMemoryResponse] = Field(default_factory=list)
+    SkillsList: list[CharacterSkillInfoResponse] = Field(default_factory=list)
+    EnhanceSkillList: list[CharacterSkillInfoResponse] = Field(default_factory=list)
+
+
+class CharacterWeaponCandidatesResponse(BaseModel):
+    character_record_id: int
+    character_id: int
+    current_weapon: EquipItemResponse | None = None
+    items: list[EquipItemResponse] = Field(default_factory=list)
+
+
+class CharacterMemoryCandidatesResponse(BaseModel):
+    character_record_id: int
+    character_id: int
+    slot: int
+    current_memory: EquipItemResponse | None = None
+    items: list[EquipItemResponse] = Field(default_factory=list)
+
+
+class SwitchCharacterWeaponRequest(BaseModel):
+    WeaponRecordId: int
+
+
+class SwitchCharacterMemoryRequest(BaseModel):
+    MemoryRecordId: int | None = None
+    Slot: int
+
+
+class SwitchCharacterWeaponResponse(BaseModel):
+    updated: bool
+    current_weapon: EquipItemResponse | None = None
+
+
+class SwitchCharacterMemoryResponse(BaseModel):
+    updated: bool
+    current_memory: EquipItemResponse | None = None
+
+
+class InventoryItemResponse(BaseModel):
+    item_id: int
+    quantity: int
+
+
+class InventoryListResponse(BaseModel):
+    items: list[InventoryItemResponse] = Field(default_factory=list)
+    page: int = 1
+    page_size: int = 10
+    total: int = 0
+    total_pages: int = 0
+
+
+class ItemCatalogEntryResponse(BaseModel):
+    item_id: int
+    name: str = ""
+    icon_url: str | None = None
+    item_type: int | None = None
+    quality: int | None = None
+
+
+class ItemCatalogResponse(BaseModel):
+    items: list[ItemCatalogEntryResponse] = Field(default_factory=list)
+    page: int = 1
+    page_size: int = 20
+    total: int = 0
+    total_pages: int = 0
+
+
+class WarzoneNpcCatalogEntryResponse(BaseModel):
+    npc_id: int
+    name: str = ""
+    boss_name: str = ""
+    is_boss: bool = False
+    model_id: str = ""
+    type: int
+    attrib_id: int
+    promoted_id: int
+
+
+class WarzoneNpcCatalogResponse(BaseModel):
+    items: list[WarzoneNpcCatalogEntryResponse] = Field(default_factory=list)
+    page: int
+    page_size: int
+    total: int
+    total_pages: int
+
+
+class StageItemResponse(BaseModel):
+    stage_id: int
+
+
+class StageListResponse(BaseModel):
+    items: list[StageItemResponse] = Field(default_factory=list)
+    page: int = 1
+    page_size: int = 10
+    total: int = 0
+    total_pages: int = 0
+
+
+class StageClearedIdsResponse(BaseModel):
+    stage_ids: list[int] = Field(default_factory=list)
+
+
+class AddStagesRequest(BaseModel):
+    stage_ids: list[int] = Field(default_factory=list)
+
+
+class AddStagesResponse(BaseModel):
+    added_count: int
+
+
+class DeleteStageResponse(BaseModel):
+    stage_id: int
+    deleted: bool
+
+
+class ClearStagesResponse(BaseModel):
+    deleted_count: int
+
+
+class WeaponOverrunExtraInfoResponse(BaseModel):
+    level: int | None = None
+    max_level: int | None = None
+    chose_suit: int | None = None
+
+
+class EquipItemResponse(BaseModel):
+    record_id: int
+    TemplateId: int
+    CharacterId: int | None = None
+    Level: int | None = None
+    Exp: int | None = None
+    Breakthrough: int | None = None
+    EnhancementLevel: int | None = None
+
+
+class EquipListResponse(BaseModel):
+    items: list[EquipItemResponse] = Field(default_factory=list)
+    page: int = 1
+    page_size: int = 10
+    total: int = 0
+    total_pages: int = 0
+
+class ClearEquipsRequest(BaseModel):
+    keyword: str | None = None
+
+
+class ClearEquipsResponse(BaseModel):
+    keyword: str
+    deleted_count: int
+
+
+class AddEquipRequest(BaseModel):
+    template_ids: list[int] = Field(min_length=1)
+
+
+class AddEquipResponse(BaseModel):
+    added: bool
+    added_count: int
+
+class DeleteEquipResponse(BaseModel):
+    record_id: int
+    deleted: bool
+
+
+class UpdateEquipRequest(BaseModel):
+    field: str
+    value: int
+
+class UpdateEquipResponse(BaseModel):
+    record_id: int
+    TemplateId: int
+    CharacterId: int | None = None
+    Level: int | None = None
+    Exp: int | None = None
+    Breakthrough: int | None = None
+    EnhancementLevel: int | None = None
+
+class UpdateWeaponOverrunRequest(BaseModel):
+    chose_suit: int | None = None
+    level: int | None = None
+
+class EquipResonanceExtraInfoResponse(BaseModel):
+    slot: int
+    type: int | None = None
+    template_id: int | None = None
+    character_id: int | None = None
+
+
+class WeaponExtraInfoResponse(BaseModel):
+    max_breakthrough: int
+    breakthrough_level_limit_map: dict[int, int]
+    description: str | None = None
+    current_level_exp_limit: int | None = None
+    resonance_info: list[EquipResonanceExtraInfoResponse] | None = None
+    weapon_overrun_data: WeaponOverrunExtraInfoResponse | None = None
+    current_character_memories: list[int] | None = None
+
+
+class MemoryExtraInfoResponse(BaseModel):
+    max_breakthrough: int
+    breakthrough_level_limit_map: dict[int, int]
+    description: str | None = None
+    current_level_exp_limit: int | None = None
+    resonance_info: list[EquipResonanceExtraInfoResponse] | None = None
+    awake_slot_list: list[int] | None = None
+
+
+class UpdateEquipResonanceRequest(BaseModel):
+    Slot: int
+    Type: int
+    TemplateId: int
+    CharacterId: int
+    Awake: bool | None = None
+
+
+class UpdateEquipResonanceResponse(BaseModel):
+    Slot: int
+    Type: int | None = None
+    TemplateId: int | None = None
+    CharacterId: int | None = None
+
+
+class DeleteEquipResonanceResponse(BaseModel):
+    Slot: int
+    deleted: bool
+
+
+class ClearInventoryItemsRequest(BaseModel):
+    keyword: str | None = None
+
+
+class DeleteInventoryItemResponse(BaseModel):
+    item_id: int
+    deleted: bool
+
+
+class ClearInventoryItemsResponse(BaseModel):
+    keyword: str
+    deleted_count: int
+
+
+class UpdateInventoryItemRequest(BaseModel):
+    quantity: int
+
+
+class UpdateInventoryItemResponse(BaseModel):
+    item_id: int
+    quantity: int
+    updated: bool
+
+
+class AddInventoryItemPayload(BaseModel):
+    item_id: int
+    quantity: int
+
+
+class AddInventoryItemsRequest(BaseModel):
+    items: list[AddInventoryItemPayload] = Field(default_factory=list)
+
+
+class AddInventoryItemsResponse(BaseModel):
+    added_count: int
+    created_count: int
+    updated_count: int
+
+
+class SelectAccountRequest(BaseModel):
+    uid: int
+
+
+class SelectedAccountResponse(BaseModel):
+    selected_uid: int | None = None
+
+
+class ResetAccountPasswordRequest(BaseModel):
+    uid: int
+    password: str = Field(min_length=6)
+
+
+class ResetAccountPasswordResponse(BaseModel):
+    uid: int
+    updated: bool
+
+
+class DeleteAccountResponse(BaseModel):
+    uid: int
+    deleted: bool
+
+
+class PlayerProfileResponse(BaseModel):
+    uid: int
+    name: str | None = None
+    gender: int | None = None
+    level: int | None = None
+    honor_level: int | None = None
+    likes: int | None = None
+    exp: int = 0
+    money: int = 0
+    serum: int = 0
+    black_card: int = 0
+    rainbow_card: int = 0
+    head_portrait_id: int | None = None
+    head_frame_id: int | None = None
+    use_background_id: int | None = None
+    unlock_head_portraits: list[int] = []
+    unlock_head_frames: list[int] = []
+    owned_background_ids: list[int] = []
+    current_wear_nameplate: int | None = None
+    unlock_nameplates: list[int] = []
+    current_medal_id: int = 0
+    unlock_medals: list[int] = []
+    current_chat_board_id: int = 25000001
+    unlock_chat_boards: list[int] = []
+
+
+class UpdateSelectedPlayerProfileRequest(BaseModel):
+    field: str
+    value: str | int
+
+
+class HealthStatusResponse(BaseModel):
+    checked_at: str | None = None
+    interval_seconds: int
+    sections: list[dict[str, object]]
+    controls: dict[str, object]
+
+
+class DatabaseHealthStatusResponse(BaseModel):
+    checked_at: str | None = None
+    interval_seconds: int
+    sections: list[dict[str, object]]
+
+
+class ServerConfigResponse(BaseModel):
+    path: str
+    text: str
+    editable: bool
+
+
+class SaveServerConfigRequest(BaseModel):
+    text: str
+
